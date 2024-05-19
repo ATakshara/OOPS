@@ -1,0 +1,55 @@
+#include <iostream>
+
+class Shape {
+protected:
+    double dimension1;
+    double dimension2;
+
+public:
+    // Function to initialize base class data members
+    void getData(double d1, double d2) {
+        dimension1 = d1;
+        dimension2 = d2;
+    }
+
+    // Virtual function to compute and display the area
+    virtual void displayArea() const = 0; // Pure virtual function
+};
+
+class Triangle : public Shape {
+public:
+    // Override displayArea to compute the area of a triangle
+    void displayArea() const override {
+        double area = 0.5 * dimension1 * dimension2;
+        std::cout << "Area of Triangle: " << area << std::endl;
+    }
+};
+
+class Rectangle : public Shape {
+public:
+    // Override displayArea to compute the area of a rectangle
+    void displayArea() const override {
+        double area = dimension1 * dimension2;
+        std::cout << "Area of Rectangle: " << area << std::endl;
+    }
+};
+
+int main() {
+    Triangle tri;
+    Rectangle rect;
+
+    double base, height, length, breadth;
+
+    std::cout << "Enter base and height of the triangle: ";
+    std::cin >> base >> height;
+    tri.getData(base, height);
+
+    std::cout << "Enter length and breadth of the rectangle: ";
+    std::cin >> length >> breadth;
+    rect.getData(length, breadth);
+
+    tri.displayArea();
+    rect.displayArea();
+
+    return 0;
+}

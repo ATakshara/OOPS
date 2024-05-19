@@ -1,0 +1,105 @@
+#include <iostream>
+#include <string>
+
+class Account {
+protected:
+    std::string customerName;
+    int accountNumber;
+    double balance;
+    std::string accountType;
+
+public:
+    Account(std::string name, int accNum, std::string type, double bal = 0.0)
+        : customerName(name), accountNumber(accNum), accountType(type), balance(bal) {}
+
+    virtual void deposit(double amount) {
+        balance += amount;
+        std::cout << "Deposited " << amount << ". New balance: " << balance << std::endl;
+    }
+
+    virtual void displayBalance() const {
+        std::cout << "Account Balance: " << balance << std::endl;
+    }
+
+    virtual void withdraw(double amount) = 0; // Pure virtual function
+
+    virtual void computeInterest() = 0; // Pure virtual function
+};
+
+class SavAcct : public Account {
+private:
+    double interestRate;
+
+public:
+    SavAcct(std::string name, int accNum, double rate, double bal = 0.0)
+        : Account(name, accNum, "Savings", bal), interestRate(rate) {}
+
+    void computeInterest() override {
+        double interest = balance * interestRate / 100;
+        balance += interest;
+        std::cout << "Interest of " << interest << " added. New balance: " << balance << std::endl;
+    }
+
+    void withdraw(double amount) override {
+        if (amount > balance) {
+            std::cout << "Insufficient balance." << std::endl;
+        } else {
+            balance -= amount;
+            std::cout << "Withdrew " << amount << ". New balance: " << balance << std::endl;
+        }
+    }
+};
+
+class CurAcct : public Account {
+private:
+    double minimumBalance;
+    double serviceCharge;
+
+public:
+    CurAcct(std::string name, int accNum, double minBal, double charge, double bal = 0.0)
+        : Account(name, accNum, "Current", bal), minimumBalance(minBal), serviceCharge(charge) {}
+
+    void computeInterest() override {
+        // No interest for current account
+    }
+
+    void withdraw(double amount) override {
+        if (amount > balance) {
+            std::cout << "Insufficient balance." << std::endl;
+        } else {
+            balance -= amount;
+            std::cout << "Withdrew " << amount << ". New balance: " << balance << std::endl;
+            checkMinimumBalance();
+        }
+    }
+
+    void checkMinimumBalance() {
+        if (balance < minimumBalance) {
+            balance -= serviceCharge;
+            std::cout << "Balance below minimum. Service charge of " << serviceCharge
+                      << " imposed. New balance: " << balance << std::endl;
+        }
+    }
+};
+
+int main() {
+    SavAcct savings("John Doe", 123456, 5.0, 1000.0);
+    CurAcct current("Jane Smith", 654321, 500.0, 50.0, 1000.0);
+
+    std::cout << "Savings Account Operations:" << std::endl;
+    savings.displayBalance();
+    savings.deposit(500);
+    savings.computeInterest();
+    savings.withdraw(200);
+    savings.displayBalance();
+
+    std::cout << "\nCurrent Account Operations:" << std::endl;
+    current.displayBalance();
+    current.deposit(500);
+    current.withdraw(1200);
+    current.checkMinimumBalance();
+    current.withdraw(100);
+    current.displayBalance();
+
+    return 0;
+}

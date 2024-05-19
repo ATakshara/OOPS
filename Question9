@@ -1,0 +1,82 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+class Book {
+private:
+    std::string title;
+    std::string author;
+    double price;
+    int stock;
+    static int transactionCount; // Static member to keep track of successful transactions
+
+    // Private member function to update the price
+    void updatePrice(double newPrice) {
+        price = newPrice;
+    }
+
+public:
+    Book(std::string t, std::string a, double p, int s) : title(t), author(a), price(p), stock(s) {}
+
+    void displayDetails() const {
+        std::cout << "Title: " << title << ", Author: " << author
+                  << ", Price: " << price << ", Stock: " << stock << std::endl;
+    }
+
+    bool isAvailable(int quantity) const {
+        return stock >= quantity;
+    }
+
+    void sellBook(int quantity) {
+        if (isAvailable(quantity)) {
+            stock -= quantity;
+            transactionCount++; // Update transaction count
+            std::cout << "Transaction successful!" << std::endl;
+        } else {
+            std::cout << "Not enough stock available." << std::endl;
+        }
+    }
+
+    void setPrice(double newPrice) {
+        updatePrice(newPrice);
+        std::cout << "Price updated to " << price << std::endl;
+    }
+
+    static int getTransactionCount() {
+        return transactionCount;
+    }
+};
+
+// Initialize static member
+int Book::transactionCount = 0;
+
+int main() {
+    std::vector<Book> inventory = {
+        Book("1984", "George Orwell", 15.99, 10),
+        Book("To Kill a Mockingbird", "Harper Lee", 12.99, 5),
+        Book("The Great Gatsby", "F. Scott Fitzgerald", 10.99, 8)
+    };
+
+    // Display all books
+    for (const auto& book : inventory) {
+        book.displayDetails();
+    }
+
+    // Selling books
+    inventory[0].sellBook(3);
+    inventory[1].sellBook(1);
+    inventory[2].sellBook(9); // This will fail due to insufficient stock
+
+    // Updating book price
+    inventory[0].setPrice(18.99);
+
+    // Display all books after transactions
+    for (const auto& book : inventory) {
+        book.displayDetails();
+    }
+
+    // Display total number of successful transactions
+    std::cout << "Total successful transactions: " << Book::getTransactionCount() << std::endl;
+
+    return 0;
+}

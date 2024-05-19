@@ -1,0 +1,72 @@
+#include <iostream>
+
+class Complex {
+private:
+    double real;
+    double imaginary;
+
+public:
+    // Default constructor
+    Complex() : real(0), imaginary(0) {}
+
+    // Parameterized constructor
+    Complex(double r, double i) : real(r), imaginary(i) {}
+
+    // Overload + operator to add two Complex numbers
+    Complex operator+(const Complex& other) const {
+        return Complex(real + other.real, imaginary + other.imaginary);
+    }
+
+    // Overload - operator to subtract two Complex numbers
+    Complex operator-(const Complex& other) const {
+        return Complex(real - other.real, imaginary - other.imaginary);
+    }
+
+    // Overload * operator to multiply two Complex numbers
+    Complex operator*(const Complex& other) const {
+        return Complex(real * other.real - imaginary * other.imaginary,
+                       real * other.imaginary + imaginary * other.real);
+    }
+
+    // Overload / operator to divide two Complex numbers
+    Complex operator/(const Complex& other) const {
+        double denominator = other.real * other.real + other.imaginary * other.imaginary;
+        return Complex((real * other.real + imaginary * other.imaginary) / denominator,
+                       (imaginary * other.real - real * other.imaginary) / denominator);
+    }
+
+    // Friend function to overload << operator for output
+    friend std::ostream& operator<<(std::ostream& os, const Complex& c) {
+        os << c.real << " + " << c.imaginary << "i";
+        return os;
+    }
+
+    // Friend function to overload >> operator for input
+    friend std::istream& operator>>(std::istream& is, Complex& c) {
+        is >> c.real >> c.imaginary;
+        return is;
+    }
+};
+
+int main() {
+    Complex c1, c2;
+
+    std::cout << "Enter first complex number (real and imaginary part): ";
+    std::cin >> c1;
+    std::cout << "Enter second complex number (real and imaginary part): ";
+    std::cin >> c2;
+
+    Complex sum = c1 + c2;
+    Complex difference = c1 - c2;
+    Complex product = c1 * c2;
+    Complex quotient = c1 / c2;
+
+    std::cout << "c1: " << c1 << std::endl;
+    std::cout << "c2: " << c2 << std::endl;
+    std::cout << "Sum: " << sum << std::endl;
+    std::cout << "Difference: " << difference << std::endl;
+    std::cout << "Product: " << product << std::endl;
+    std::cout << "Quotient: " << quotient << std::endl;
+
+    return 0;
+}
